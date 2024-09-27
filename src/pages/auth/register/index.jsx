@@ -1,11 +1,18 @@
 import { Button, Input, message, notification } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { validateEmail } from "../../../utils/validateData";
 import { register } from "../../../services/authService";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Register() {
   const navigate = useNavigate();
+  const inputRefFocus = useRef();
+
+  useEffect(() => {
+    if (inputRefFocus) {
+      inputRefFocus.current.focus();
+    }
+  }, []);
 
   const [user, setUser] = useState({
     fullName: "",
@@ -18,6 +25,7 @@ export default function Register() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateData = (name, value) => {
     let invalid = true;
@@ -106,6 +114,7 @@ export default function Register() {
     if (fullNameValid && emailValid && passwordValid && confirmPasswordValid) {
       delete user.confirmPassword;
       try {
+        setIsLoading(true);
         // Submit forrm
         const response = await register(user);
 
@@ -125,6 +134,8 @@ export default function Register() {
         const errorObj = Object.values(responseError);
 
         message.error(errorObj[0]);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -145,6 +156,7 @@ export default function Register() {
             <div className="flex flex-col gap-2 relative">
               <label htmlFor="fullName">Họ và tên &#42;</label>
               <Input
+                ref={inputRefFocus}
                 onChange={handleChange}
                 name="fullName"
                 status={fullNameError ? "error" : ""}
@@ -206,9 +218,20 @@ export default function Register() {
             </div>
           </main>
           <footer className="mt-4">
-            <Button htmlType="submit" className="w-full h-10" type="primary">
+            <Button
+              loading={isLoading}
+              htmlType="submit"
+              className="w-full h-10"
+              type="primary"
+            >
               Đăng ký
             </Button>
+            <p className="text-center mt-3">
+              Bạn đã có tài khoản?{" "}
+              <Link to="/login" className="text-blue-600 hover:text-blue-500">
+                Đăng nhập
+              </Link>
+            </p>
           </footer>
         </form>
       </div>

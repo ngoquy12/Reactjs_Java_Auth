@@ -1,5 +1,6 @@
 import React from "react";
 import UserLayout from "../layouts/user/UserLayout";
+import LazyLoader from "../components/LazyLoad";
 
 const HomePage = React.lazy(() => import("../pages/user/home"));
 const AboutPage = React.lazy(() => import("../pages/user/about"));
@@ -14,37 +15,37 @@ const ProductDetailPage = React.lazy(() =>
 const PublicRoutes = [
   {
     path: "/",
-    element: <UserLayout />,
+    element: <LazyLoader children={<UserLayout />} />,
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <LazyLoader children={<HomePage />} />,
       },
       {
         path: "about",
-        element: <AboutPage />,
+        element: <LazyLoader children={<AboutPage />} />,
       },
       {
         path: "contact",
-        element: <ContactPage />,
+        element: <LazyLoader children={<ContactPage />} />,
       },
       {
         path: "list-product",
-        element: <ListProductPage />,
+        element: <LazyLoader children={<ListProductPage />} />,
       },
       {
         path: "product-detail/:id",
-        element: <ProductDetailPage />,
+        element: <LazyLoader children={<ProductDetailPage />} />,
       },
     ],
   },
   {
     path: "/login",
-    element: <LoginPage />,
+    element: <LazyLoader children={<LoginPage />} />,
   },
   {
     path: "/register",
-    element: <RegisterPage />,
+    element: <LazyLoader children={<RegisterPage />} />,
   },
 ];
 
